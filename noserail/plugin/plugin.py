@@ -10,7 +10,7 @@ CASE_ID = 'case_id'
 
 
 def elapsed_time(seconds):
-    suffixes=['y','w','d','h','m','s']
+    suffixes = ['y', 'w', 'd', 'h', 'm', 's']
     time = []
     parts = [(suffixes[0], 60 * 60 * 24 * 7 * 52),
           (suffixes[1], 60 * 60 * 24 * 7),
@@ -37,7 +37,7 @@ def case_id(id):
 
 
 class NoseTestRail(Plugin):
-    name = 'nose-testrail'
+    name = 'noserail'
 
     def options(self, parser, env=os.environ):
         super(NoseTestRail, self).options(parser, env=env)
@@ -79,7 +79,9 @@ class NoseTestRail(Plugin):
             headers['Content-Type'] = 'application/json'
             user = os.environ['TESTRAIL_USERNAME']
             password = os.environ['TESTRAIL_PASSWORD']
-            auth = base64.b64encode('%s:%s' % (user, password)).strip()
+            to_encode = '%s:%s' % (user, password)
+            to_encode = to_encode.encode('ascii')
+            auth = base64.b64encode(to_encode).strip()
             headers['Authorization'] = 'Basic %s' % auth
             host = os.environ['TESTRAIL_HOST']
             run_id = os.environ['TESTRAIL_RUN_ID']

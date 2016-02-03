@@ -9,7 +9,7 @@ setup(
     author_email='ilya.email@icloud.com',
     entry_points={
         'nose.plugins.0.10': [
-            'noserail = nose_testrail.plugin:NoseTestRail'
+            'noserail = noserail.plugin.plugin:NoseTestRail'
         ]
     },
 )
