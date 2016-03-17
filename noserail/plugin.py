@@ -5,7 +5,6 @@ import requests
 import base64
 import traceback
 import time
-
 CASE_ID = 'case_id'
 
 
@@ -60,7 +59,7 @@ class NoseTestRail(Plugin):
 
     def addError(self, test, err):
         self.result['status_id'] = 5
-        self.result['comment'] = self.formatErr(err)
+        self.result['comment'] = err
 
     def send_result(self, result):
         if self.test_case_id:
