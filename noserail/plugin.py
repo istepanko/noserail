@@ -2,31 +2,11 @@ from nose.plugins import Plugin
 import json
 import os
 import requests
-from datetime import datetime
 import base64
 import traceback
 import time
 
 CASE_ID = 'case_id'
-
-
-def elapsed_time(seconds):
-    suffixes = ['y', 'w', 'd', 'h', 'm', 's']
-    time = []
-    parts = [(suffixes[0], 60 * 60 * 24 * 7 * 52),
-             (suffixes[1], 60 * 60 * 24 * 7),
-             (suffixes[2], 60 * 60 * 24),
-             (suffixes[3], 60 * 60),
-             (suffixes[4], 60),
-             (suffixes[5], 1)]
-    for suffix, length in parts:
-        value = seconds / length
-        if value > 0:
-            seconds = seconds % length
-            time.append('%s%s' % (str(value), suffix))
-        if seconds < 1:
-            break
-    return ' '.join(time)
 
 
 def case_id(id):
@@ -57,11 +37,17 @@ class NoseTestRail(Plugin):
         self.result = {}
 
     def stopTest(self, test):
-        time_after = time.time()
-        difference = time_after - self.time_before
-        difference = '{0:.2f}'.format(difference)
+        self.time_after = time.time()
+        difference = self.time_after - self.time_before
+        k = str(difference).split('.')
+        if int(k[0]) > 50:
+            k = 1
+        else:
+            k = 0
+        difference = '{0:.0f}'.format(difference)
+        difference = int(difference)
+        difference += k
         self.result['elapsed'] = str(difference) + 's'
-        self.time_before = time_after
         self.send_result(self.result)
 
     def addSuccess(self, test):
@@ -84,7 +70,7 @@ class NoseTestRail(Plugin):
             password = os.environ['TESTRAIL_PASSWORD']
             to_encode = '%s:%s' % (user, password)
             to_encode = to_encode.encode('ascii')
-            auth = base64.b64encode(to_encode).strip().decode("utf-8")
+            auth = base64.b64encode(to_encode).strip().decode('utf-8')
             headers['Authorization'] = 'Basic %s' % auth
             host = os.environ['TESTRAIL_HOST']
             run_id = os.environ['TESTRAIL_RUN_ID']
@@ -102,7 +88,7 @@ class NoseTestRail(Plugin):
         """format error"""
         exctype, value, tb = err
         tr = traceback.format_exception(exctype, value, tb)
-        return "".join(tr)
+        return ''.join(tr)
 
     def get_test_case_id(self, test):
         test_name = test.id().split('.')[-1]
