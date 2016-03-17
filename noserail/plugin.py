@@ -49,9 +49,10 @@ class NoseTestRail(Plugin):
             return
 
     def begin(self):
-        self.time_before = time.time()
+        pass
 
     def startTest(self, test):
+        self.time_before = time.time()
         self.test_case_id = self.get_test_case_id(test)
         self.result = {}
 
@@ -90,15 +91,12 @@ class NoseTestRail(Plugin):
             if host:
                 uri = 'https://{0}/index.php?/api/v2/add_result_for_case/{1}/{2}'.format(
                     host, run_id, self.test_case_id)
-                print(json.dumps(result))
                 r = requests.request(
                     method='POST',
                     url=uri,
                     data=json.dumps(result),
                     headers=headers
                 )
-                print(r.status_code)
-                print(r.content)
 
     def formatErr(self, err):
         """format error"""
