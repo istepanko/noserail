@@ -97,6 +97,9 @@ class NoseTestRail(Plugin):
             url='https://{0}/index.php?/api/v2/get_case/{1}'.format(self.host, case_id),
             headers=self.headers
         )
+        print('GET CASE')
+        print(r.content)
+        print(r.status_code)
         if r.status_code == 200:
             suite_id = r.json()['suite_id']
             r = requests.request(
@@ -104,6 +107,9 @@ class NoseTestRail(Plugin):
                 url='https://{0}/index.php?/api/v2/get_suite/{1}'.format(self.host, suite_id),
                 headers=self.headers
             )
+            print('GET SUITE')
+            print(r.content)
+            print(r.status_code)
             if r.status_code == 200:
                 project_id = r.json()['project_id']
                 r = requests.request(
@@ -112,6 +118,9 @@ class NoseTestRail(Plugin):
                                                                                                  suite_id),
                     headers=self.headers
                 )
+            print('GET RUNS')
+            print(r.content)
+            print(r.status_code)
                 if r.status_code == 200:
                     return r.json()[0]['id']
             else:
