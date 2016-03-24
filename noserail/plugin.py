@@ -31,10 +31,10 @@ class NoseTestRail(Plugin):
         user = os.environ['TESTRAIL_USERNAME']
         password = os.environ['TESTRAIL_PASSWORD']
         print(user, password)
-        to_encode = '%s:%s'.format(user, password).encode('ascii')
+        to_encode = '{0}:{1}'.format(user, password).encode('ascii')
         auth = base64.b64encode(to_encode).strip().decode('utf-8')
         self.headers = dict()
-        self.headers['Authorization'] = 'Basic %s'.format(auth)
+        self.headers['Authorization'] = 'Basic {0}'.format(auth)
         self.headers['Content-Type'] = 'application/json'
         if os.environ['TESTRAIL_HOST']:
             self.host = os.environ['TESTRAIL_HOST']
