@@ -111,9 +111,9 @@ class NoseTestRail(Plugin):
 
     def formatErr(self, err):
         """format error"""
-        exctype, value, tb = err
-        tr = traceback.format_exception(exctype, value, tb)
-        return ''.join(tr)
+        #exctype, value, tb = err
+        #tr = traceback.format_exception(exctype, value, tb)
+        return err
 
     def get_test_case_id(self, test):
         test_name = test.id().split('.')[-1]
