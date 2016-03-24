@@ -5,7 +5,6 @@ import requests
 import base64
 import time
 CASE_ID = 'case_id'
-import nose.case
 
 
 def case_id(id):
