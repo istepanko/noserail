@@ -68,11 +68,11 @@ class NoseTestRail(Plugin):
 
     def addFailure(self, test, err):
         self.result['status_id'] = 5
-        self.result['comment'] = str(self.formatErr(err))
+        self.result['comment'] = self.formatErr(err)
 
     def addError(self, test, err):
         self.result['status_id'] = 5
-        self.result['comment'] = str(self.formatErr(err))
+        self.result['comment'] = self.formatErr(err)
 
     def send_result(self, result):
         if self.test_case_id:
@@ -120,6 +120,7 @@ class NoseTestRail(Plugin):
 
     def formatErr(self, err):
         exctype, value, tb = err
+        value = str(value)
         for item in self.items:
             value.replace(item, '')
         return value
