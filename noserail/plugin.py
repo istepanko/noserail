@@ -44,7 +44,7 @@ class NoseTestRail(Plugin):
             self.host = 'ayla.testrail.com'
 
     def startTest(self, test):
-        self.test_name = test.__str__()
+        self.test_name = test.__str__().split(' ')[0]
         print(self.test_name)
         self.time_before = time.time()
         self.test_case_id = self.get_test_case_id(test)
