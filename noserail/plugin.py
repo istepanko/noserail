@@ -26,18 +26,6 @@ class NoseTestRail(Plugin):
         if not self.enabled:
             return
 
-    def args(self):
-        print('test1')
-        user = os.environ['TESTRAIL_USERNAME']
-        password = os.environ['TESTRAIL_PASSWORD']
-        to_encode = '{0}:{1}'.format(user, password).encode('ascii')
-        auth = base64.b64encode(to_encode).strip().decode('utf-8')
-        self.headers = dict()
-        self.headers['Authorization'] = 'Basic {0}'.format(auth)
-        self.headers['Content-Type'] = 'application/json'
-        self.host = os.environ['TESTRAIL_HOST']
-        self.inited = 1
-
     def begin(self):
         self.inited = 0
         self.items = ['root: INFO: ', 'root: CRITICAL: ', 'DEBUG: ',
@@ -124,6 +112,18 @@ class NoseTestRail(Plugin):
                     return r.json()[0]['id']
             else:
                 return False
+
+    def args(self):
+        print('test1')
+        user = os.environ['TESTRAIL_USERNAME']
+        password = os.environ['TESTRAIL_PASSWORD']
+        to_encode = '{0}:{1}'.format(user, password).encode('ascii')
+        auth = base64.b64encode(to_encode).strip().decode('utf-8')
+        self.headers = dict()
+        self.headers['Authorization'] = 'Basic {0}'.format(auth)
+        self.headers['Content-Type'] = 'application/json'
+        self.host = os.environ['TESTRAIL_HOST']
+        self.inited = 1
 
     def formatErr(self, err):
         exctype, value, tb = err
