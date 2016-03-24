@@ -72,21 +72,23 @@ class NoseTestRail(Plugin):
         self.result['comment'] = str(self.formatErr(err))
 
     def send_result(self, result):
+        print(123)
         if self.test_case_id:
             run_id = self.get_last_run_id(self.test_case_id)
-            uri = 'https://{0}/index.php?/api/v2/add_result_for_case/{1}/{2}'.format(
-                self.host, run_id, self.test_case_id)
-            try:
-                data = json.dumps(result)
-            except Exception:
-                result['comment'] = 'Could not send comment.'
-                data = json.dumps(result)
-            requests.request(
-                    method='POST',
-                    url=uri,
-                    data=data,
-                    headers=self.headers
-                )
+            if run_id:
+                uri = 'https://{0}/index.php?/api/v2/add_result_for_case/{1}/{2}'.format(
+                    self.host, run_id, self.test_case_id)
+                try:
+                    data = json.dumps(result)
+                except Exception:
+                    result['comment'] = 'Could not send comment.'
+                    data = json.dumps(result)
+                requests.request(
+                        method='POST',
+                        url=uri,
+                        data=data,
+                        headers=self.headers
+                    )
 
     def get_last_run_id(self, case_id):
         r = requests.request(
