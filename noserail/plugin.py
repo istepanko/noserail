@@ -28,6 +28,9 @@ class NoseTestRail(Plugin):
             return
 
     def begin(self):
+        self.items = ['root: INFO:', 'root: CRITICAL:', 'root: DEBUG:',
+                      '-------------------- >> begin captured logging << --------------------',
+                      '--------------------- >> end captured logging << ---------------------']
         user = os.environ['TESTRAIL_USERNAME']
         password = os.environ['TESTRAIL_PASSWORD']
         to_encode = '{0}:{1}'.format(user, password).encode('ascii')
@@ -116,9 +119,9 @@ class NoseTestRail(Plugin):
                 return False
 
     def formatErr(self, err):
-        """format error"""
         exctype, value, tb = err
-        #tr = traceback.format_exception(exctype, value, tb)
+        for item in self.items:
+            value.replace(item, '')
         return value
 
     def get_test_case_id(self, test):
