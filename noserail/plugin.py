@@ -3,7 +3,6 @@ import json
 import os
 import requests
 import base64
-import traceback
 import time
 CASE_ID = 'case_id'
 
@@ -28,7 +27,7 @@ class NoseTestRail(Plugin):
             return
 
     def begin(self):
-        self.items = ['root: INFO:', 'root: CRITICAL:', 'root: DEBUG:',
+        self.items = ['root: INFO: ', 'root: CRITICAL: ', 'DEBUG: ',
                       '-------------------- >> begin captured logging << --------------------',
                       '--------------------- >> end captured logging << ---------------------']
         user = os.environ['TESTRAIL_USERNAME']
@@ -123,7 +122,6 @@ class NoseTestRail(Plugin):
         value = str(value)
         for item in self.items:
             value = value.replace(item, '')
-        print(value)
         return value
 
     def get_test_case_id(self, test):
