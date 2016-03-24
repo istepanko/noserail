@@ -26,10 +26,7 @@ class NoseTestRail(Plugin):
         if not self.enabled:
             return
 
-    def begin(self):
-        self.items = ['root: INFO: ', 'root: CRITICAL: ', 'DEBUG: ',
-                      '-------------------- >> begin captured logging << --------------------',
-                      '--------------------- >> end captured logging << ---------------------']
+    def args(self):
         user = os.environ['TESTRAIL_USERNAME']
         password = os.environ['TESTRAIL_PASSWORD']
         to_encode = '{0}:{1}'.format(user, password).encode('ascii')
@@ -37,10 +34,14 @@ class NoseTestRail(Plugin):
         self.headers = dict()
         self.headers['Authorization'] = 'Basic {0}'.format(auth)
         self.headers['Content-Type'] = 'application/json'
-        if os.environ['TESTRAIL_HOST']:
-            self.host = os.environ['TESTRAIL_HOST']
-        else:
-            self.host = 'ayla.testrail.com'
+        self.host = os.environ['TESTRAIL_HOST']
+        self.inited = 1
+
+    def begin(self):
+        self.inited = 0
+        self.items = ['root: INFO: ', 'root: CRITICAL: ', 'DEBUG: ',
+                      '-------------------- >> begin captured logging << --------------------',
+                      '--------------------- >> end captured logging << ---------------------']
 
     def startTest(self, test):
         self.test_name = test.__str__().split(' ')[0]
@@ -75,6 +76,8 @@ class NoseTestRail(Plugin):
         self.result['comment'] = self.formatErr(err)
 
     def send_result(self, result):
+        if not self.inited:
+            self.args()
         if self.test_case_id:
             run_id = self.get_last_run_id(self.test_case_id)
             if run_id:
