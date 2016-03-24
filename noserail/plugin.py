@@ -118,9 +118,9 @@ class NoseTestRail(Plugin):
                                                                                                  suite_id),
                     headers=self.headers
                 )
-            print('GET RUNS')
-            print(r.content)
-            print(r.status_code)
+                print('GET RUNS')
+                print(r.content)
+                print(r.status_code)
                 if r.status_code == 200:
                     return r.json()[0]['id']
             else:
