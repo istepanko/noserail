@@ -43,6 +43,7 @@ class NoseTestRail(Plugin):
             self.host = 'ayla.testrail.com'
 
     def startTest(self, test):
+        self.test_name = test.__str__
         self.time_before = time.time()
         self.test_case_id = self.get_test_case_id(test)
         self.result = {}
@@ -119,6 +120,7 @@ class NoseTestRail(Plugin):
 
     def formatErr(self, err):
         exctype, value, tb = err
+        self.items.append(self.test_name)
         value = str(value)
         for item in self.items:
             value = value.replace(item, '')
