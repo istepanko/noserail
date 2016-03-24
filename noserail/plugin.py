@@ -121,8 +121,8 @@ class NoseTestRail(Plugin):
 
     def formatErr(self, err):
         exctype, value, tb = err
-        self.items.append(self.test_name)
         self.items.append(self.test_name + ': ')
+        self.items.append(self.test_name)
         value = str(value)
         for item in self.items:
             value = value.replace(item, '')
