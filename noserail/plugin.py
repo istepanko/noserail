@@ -65,17 +65,21 @@ class NoseTestRail(Plugin):
 
     def addFailure(self, test, err):
         self.result['status_id'] = 5
-        self.result['comment'] = self.formatErr(err)
+        self.result['comment'] = str(self.formatErr(err))
 
     def addError(self, test, err):
         self.result['status_id'] = 5
-        self.result['comment'] = self.formatErr(err)
+        self.result['comment'] = str(self.formatErr(err))
 
     def send_result(self, result):
         if self.test_case_id:
             run_id = self.get_last_run_id(self.test_case_id)
             uri = 'https://{0}/index.php?/api/v2/add_result_for_case/{1}/{2}'.format(
                 self.host, run_id, self.test_case_id)
+            try:
+                data = json.dumps(result)
+            except Exception:
+
             requests.request(
                     method='POST',
                     url=uri,
