@@ -30,6 +30,7 @@ class NoseTestRail(Plugin):
     def begin(self):
         user = os.environ['TESTRAIL_USERNAME']
         password = os.environ['TESTRAIL_PASSWORD']
+        print(user, password)
         to_encode = '%s:%s'.format(user, password).encode('ascii')
         auth = base64.b64encode(to_encode).strip().decode('utf-8')
         self.headers = dict()
