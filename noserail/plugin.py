@@ -45,6 +45,7 @@ class NoseTestRail(Plugin):
 
     def startTest(self, test):
         self.test_name = test.__str__()
+        print(self.test_name)
         self.time_before = time.time()
         self.test_case_id = self.get_test_case_id(test)
         self.result = {}
