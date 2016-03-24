@@ -8,7 +8,7 @@ setup(
     author_email='ilya.email@icloud.com',
     packages=find_packages(exclude=["tests"]),
     entry_points={
-        'nose.plugins.0.2.0': [
+        'nose.plugins.0.10': [
             'noserail = noserail.plugin:NoseTestRail'
         ]
     },
