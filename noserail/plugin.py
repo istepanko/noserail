@@ -5,6 +5,7 @@ import requests
 import base64
 import time
 CASE_ID = 'case_id'
+import nose.case
 
 
 def case_id(id):
@@ -43,7 +44,7 @@ class NoseTestRail(Plugin):
             self.host = 'ayla.testrail.com'
 
     def startTest(self, test):
-        self.test_name = test.__str__
+        self.test_name = test.__str__()
         self.time_before = time.time()
         self.test_case_id = self.get_test_case_id(test)
         self.result = {}
