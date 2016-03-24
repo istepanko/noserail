@@ -30,7 +30,6 @@ class NoseTestRail(Plugin):
     def begin(self):
         user = os.environ['TESTRAIL_USERNAME']
         password = os.environ['TESTRAIL_PASSWORD']
-        print(user, password)
         to_encode = '{0}:{1}'.format(user, password).encode('ascii')
         auth = base64.b64encode(to_encode).strip().decode('utf-8')
         self.headers = dict()
@@ -74,9 +73,7 @@ class NoseTestRail(Plugin):
 
     def send_result(self, result):
         if self.test_case_id:
-            print(self.test_case_id)
             run_id = self.get_last_run_id(self.test_case_id)
-            print('Run_id:{0}'.format(run_id))
             if run_id:
                 uri = 'https://{0}/index.php?/api/v2/add_result_for_case/{1}/{2}'.format(
                     self.host, run_id, self.test_case_id)
@@ -98,9 +95,6 @@ class NoseTestRail(Plugin):
             url='https://{0}/index.php?/api/v2/get_case/{1}'.format(self.host, case_id),
             headers=self.headers
         )
-        print('GET CASE')
-        print(r.content)
-        print(r.status_code)
         if r.status_code == 200:
             suite_id = r.json()['suite_id']
             r = requests.request(
@@ -108,9 +102,6 @@ class NoseTestRail(Plugin):
                 url='https://{0}/index.php?/api/v2/get_suite/{1}'.format(self.host, suite_id),
                 headers=self.headers
             )
-            print('GET SUITE')
-            print(r.content)
-            print(r.status_code)
             if r.status_code == 200:
                 project_id = r.json()['project_id']
                 r = requests.request(
@@ -119,9 +110,6 @@ class NoseTestRail(Plugin):
                                                                                                  suite_id),
                     headers=self.headers
                 )
-                print('GET RUNS')
-                print(r.content)
-                print(r.status_code)
                 if r.status_code == 200:
                     return r.json()[0]['id']
             else:
@@ -129,9 +117,9 @@ class NoseTestRail(Plugin):
 
     def formatErr(self, err):
         """format error"""
-        #exctype, value, tb = err
+        exctype, value, tb = err
         #tr = traceback.format_exception(exctype, value, tb)
-        return err
+        return value
 
     def get_test_case_id(self, test):
         test_name = test.id().split('.')[-1]
