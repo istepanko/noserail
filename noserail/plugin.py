@@ -27,6 +27,7 @@ class NoseTestRail(Plugin):
             return
 
     def args(self):
+        print('test1')
         user = os.environ['TESTRAIL_USERNAME']
         password = os.environ['TESTRAIL_PASSWORD']
         to_encode = '{0}:{1}'.format(user, password).encode('ascii')
@@ -48,6 +49,7 @@ class NoseTestRail(Plugin):
         self.time_before = time.time()
         self.test_case_id = self.get_test_case_id(test)
         self.result = {}
+        print('test2')
 
     def stopTest(self, test):
         self.time_after = time.time()
@@ -76,8 +78,10 @@ class NoseTestRail(Plugin):
         self.result['comment'] = self.formatErr(err)
 
     def send_result(self, result):
+        print('test3')
         if not self.inited:
             self.args()
+            print('test4')
         if self.test_case_id:
             run_id = self.get_last_run_id(self.test_case_id)
             if run_id:
