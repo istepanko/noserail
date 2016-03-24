@@ -79,11 +79,12 @@ class NoseTestRail(Plugin):
             try:
                 data = json.dumps(result)
             except Exception:
-
+                result['comment'] = 'Could not send comment.'
+                data = json.dumps(result)
             requests.request(
                     method='POST',
                     url=uri,
-                    data=json.dumps(result),
+                    data=data,
                     headers=self.headers
                 )
 
