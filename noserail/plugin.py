@@ -28,7 +28,17 @@ class NoseTestRail(Plugin):
             return
 
     def begin(self):
-        pass
+        user = os.environ['TESTRAIL_USERNAME']
+        password = os.environ['TESTRAIL_PASSWORD']
+        to_encode = '%s:%s'.format(user, password).encode('ascii')
+        auth = base64.b64encode(to_encode).strip().decode('utf-8')
+        self.headers = dict()
+        self.headers['Authorization'] = 'Basic %s'.format(auth)
+        self.headers['Content-Type'] = 'application/json'
+        if os.environ['TESTRAIL_HOST']:
+            self.host = os.environ['TESTRAIL_HOST']
+        else:
+            self.host = 'ayla.testrail.com'
 
     def startTest(self, test):
         self.time_before = time.time()
@@ -59,29 +69,45 @@ class NoseTestRail(Plugin):
 
     def addError(self, test, err):
         self.result['status_id'] = 5
-        self.result['comment'] = err
+        self.result['comment'] = self.formatErr(err)
 
     def send_result(self, result):
         if self.test_case_id:
-            headers = dict()
-            headers['Content-Type'] = 'application/json'
-            user = os.environ['TESTRAIL_USERNAME']
-            password = os.environ['TESTRAIL_PASSWORD']
-            to_encode = '%s:%s' % (user, password)
-            to_encode = to_encode.encode('ascii')
-            auth = base64.b64encode(to_encode).strip().decode('utf-8')
-            headers['Authorization'] = 'Basic %s' % auth
-            host = os.environ['TESTRAIL_HOST']
-            run_id = os.environ['TESTRAIL_RUN_ID']
-            if host:
-                uri = 'https://{0}/index.php?/api/v2/add_result_for_case/{1}/{2}'.format(
-                    host, run_id, self.test_case_id)
-                r = requests.request(
+            run_id = self.get_last_run_id(self.test_case_id)
+            uri = 'https://{0}/index.php?/api/v2/add_result_for_case/{1}/{2}'.format(
+                self.host, run_id, self.test_case_id)
+            requests.request(
                     method='POST',
                     url=uri,
                     data=json.dumps(result),
-                    headers=headers
+                    headers=self.headers
                 )
+
+    def get_last_run_id(self, case_id):
+        r = requests.request(
+            method='GET',
+            url='https://{0}/index.php?/api/v2/get_case/{1}'.format(self.host, case_id),
+            headers=self.headers
+        )
+        if r.status_code == 200:
+            suite_id = r.json()['suite_id']
+            r = requests.request(
+                method='GET',
+                url='https://{0}/index.php?/api/v2/get_suite/{1}'.format(self.host, suite_id),
+                headers=self.headers
+            )
+            if r.status_code == 200:
+                project_id = r.json()['project_id']
+                r = requests.request(
+                    method='GET',
+                    url='https://{0}/index.php?/api/v2/get_runs/{1}&suite_id={2}&limit=1'.format(self.host, project_id,
+                                                                                                 suite_id),
+                    headers=self.headers
+                )
+                if r.status_code == 200:
+                    return r.json()[0]['id']
+            else:
+                return False
 
     def formatErr(self, err):
         """format error"""
