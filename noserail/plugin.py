@@ -121,8 +121,11 @@ class NoseTestRail(Plugin):
     def formatErr(self, err):
         exctype, value, tb = err
         value = str(value)
+        print(value)
+        print(type(value))
         for item in self.items:
             value.replace(item, '')
+        print(value)
         return value
 
     def get_test_case_id(self, test):
